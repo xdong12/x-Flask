@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}x-Flask - Home{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Hello World!</h1>
+</div>
+    <p>The local date and time is {{ moment(current_time).format('LLL') }}</p>
+    <p>That was {{ moment(current_time).fromNow(refresh=True) }}</p>
+{% endblock %}
+
+
+
+{#    <p>A value from a dictionary: {{ mydict['key'] }}.</p>#}
+{#    <p>A value from a list: {{ mylist[3] }}.</p>#}
+{#    <p>A value from a list, with a variable index: {{ mylist[myintvar] }}.</p>#}
+{#    <p>A value from an object's method: {{ myobj.somemethod() }}.</p>#}
