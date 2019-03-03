@@ -17,15 +17,14 @@ from wtforms.validators import DataRequired
 from config import Config
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from flask_migrate import Migrate, MigrateCommand
-
-
-
+from flask_mail import Mail, Message
+from threading import Thread
 
 
 #主页表单
-class NameForm(Form):
+class NameForm(FlaskForm):
     name = StringField("What is your name?", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
@@ -40,6 +39,8 @@ Session(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
+
+mail = Mail(app)
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -68,6 +69,22 @@ def make_shell_context():
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
 
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+
+def send_email(toemail, subject, template, **kwargs):
+    """发送邮件"""
+    msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject, sender=app.config['FLASKY_MAIL_SENDER'], recipients=[toemail])
+    msg.body = render_template(template + '.txt', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs)
+    thr = Thread(target=send_async_email, args=[app, msg])
+    thr.start()
+    return thr
+
+
+
 @app.route('/', methods=['GET', 'POST'])  # 接收POST请求
 def index():
     """主页"""
@@ -83,6 +100,8 @@ def index():
             user = User(username=form.name.data)
             db.session.add(user)
             session['known'] = False
+            if app.config['FLASKY_ADMIN']:
+                send_email(app.config['FLASKY_ADMIN'], 'New User', 'mail/new_user', user=user)
         else:
             session['known'] = True
 

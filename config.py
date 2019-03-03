@@ -4,7 +4,7 @@
 # @Time: 19-2-24 上午11:11
 # @File: config.py
 
-
+import os
 import redis
 
 
@@ -25,3 +25,16 @@ class Config(object):
     SESSION_REDIS = redis.StrictRedis(host=REDIS_HOST,
                                       port=REDIS_PORT, db=10)  # 制定存储位置
     PERMANENT_SESSION_LIFETIME = 3600 * 24 * 2  # 设置session两天有效
+
+    MAIL_SERVER = 'smtp.163.com'
+    MAIL_PORT = 587
+    MAIL_USE_SSL = True
+    MAIL_USE_TLS = False
+    env = os.environ
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    FLASKY_MAIL_SUBJECT_PREFIX = '[x-Flask]'
+    FLASKY_MAIL_SENDER = 'x-Flask Admin <xdong_12@163.com>'
+    FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+
+
