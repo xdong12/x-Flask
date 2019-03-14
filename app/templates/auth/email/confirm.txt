@@ -1,0 +1,13 @@
+Dear {{ user.username }},
+
+    Welcome to x-Flasky!
+
+    To confirm your account please click on the followed link:
+
+    {{ url_for('auth.confirm', token=token, _external=True) }}
+
+    Sincerely,
+
+    The x-Flask Team
+
+    Note: replies to this email address are not monitored.
