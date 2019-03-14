@@ -5,7 +5,11 @@
 # @File: config.py
 
 import os
+
+import logging
 import redis
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):
@@ -16,6 +20,8 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = "mysql://root:mysql@127.0.0.1:3306/xflask"
     # 设置不跟踪数据库的修改
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # 自动提交省去了每次commit，添加数据对象后立马取id返回None，马上要取 id 的地方commit一下
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     # redis数据库相关配置
     REDIS_HOST = "127.0.0.1"
     REDIS_PORT = 6379
@@ -30,11 +36,35 @@ class Config(object):
     MAIL_PORT = 587
     MAIL_USE_SSL = True
     MAIL_USE_TLS = False
-    env = os.environ
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     FLASKY_MAIL_SUBJECT_PREFIX = '[x-Flask]'
     FLASKY_MAIL_SENDER = 'x-Flask Admin <xdong_12@163.com>'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
 
+    @staticmethod
+    def init_app(app):
+        pass
 
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+    LOG_LV = logging.DEBUG
+
+
+class TestingConfig(Config):
+    TESTING = True
+
+
+class ProductionConfig(Config):
+    DEBUG = False
+    LOG_LV = logging.ERROR
+
+# 提供不同环境的配置的启动入口，在创建app的时候指定使用哪一个配置
+config = {
+    'development': DevelopmentConfig,
+    'testing': TestingConfig,
+    'production': ProductionConfig,
+
+    'default': DevelopmentConfig
+}
