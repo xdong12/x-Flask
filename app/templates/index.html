@@ -1,30 +1,10 @@
-{% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}x-Flask - Home{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}x-Flask{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
-    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username
-            }}{% else
-            %}Stranger{% endif %}!</h1>
-    {% if not known %}
-        <p>Pleased to meet you!</p>
-    {% else %}
-        <p>Happy to see you again!</p>
-    {% endif %}
-    <p>The local date and time is {{ moment(current_time).format('LLL') }}</p>
-    <p>That was {{ moment(current_time).fromNow(refresh=True) }}</p>
+    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
 </div>
-
-{{ wtf.quick_form(form) }}
-
 {% endblock %}
-
-
-
-
-{#    <p>A value from a dictionary: {{ mydict['key'] }}.</p>#}
-{#    <p>A value from a list: {{ mylist[3] }}.</p>#}
-{#    <p>A value from a list, with a variable index: {{ mylist[myintvar] }}.</p>#}
-{#    <p>A value from an object's method: {{ myobj.somemethod() }}.</p>#}
